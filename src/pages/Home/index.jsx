@@ -28,6 +28,7 @@ export const HomePage = () => {
     slidesToShow: 4,
     slidesToScroll: 4,
     adaptiveHeight: true,
+    arrows: false,
   }
 
   const handleKeyPress = (e) => {
