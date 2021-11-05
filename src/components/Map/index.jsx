@@ -83,9 +83,16 @@ const MapContainer = ({ google, query, placeId }) => {
     searchNearby(map, map.center)
   }
 
+  const containerStyle = {
+    position: 'relative',
+    width: 'calc(100vw - 360px)',
+    height: '100vh',
+  }
+
   return (
     <GoogleMap
       google={google}
+      containerStyle={containerStyle}
       defaultZoom={15}
       centerAroundCurrentLocation
       onRecenter={onMapReady}
