@@ -1,0 +1,11 @@
+{
+  "include": ["**/*"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "target": "es6",
+    "module": "es6",
+    "jsx": "react",
+    "experimentalDecorators": true
+  }
+}
