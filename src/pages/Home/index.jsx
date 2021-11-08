@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import TextField, { Input } from '@material/react-text-field'
 import MaterialIcon from '@material/react-material-icon'
-import React, { useState } from 'react'
 import { ImageCard } from 'components/ImageCard'
-import logo from 'assets/logo.svg'
-import restaurantImg from 'assets/restaurant-fake.png'
-import { RestaurantCard } from 'components/RestaurantCard'
-import { Modal } from 'components/Modal'
-import { Map } from 'components/Map'
 import { Loader } from 'components/Loader'
-import { useSelector } from 'react-redux'
-import { LoadingSkeleton } from 'components/Skeleton/index'
+import { Map } from 'components/Map'
+import { Modal } from 'components/Modal'
+import { RestaurantCard } from 'components/RestaurantCard'
+import { LoadingSkeleton } from 'components/Skeleton'
+import restaurantImg from 'assets/restaurant-fake.png'
+import logo from 'assets/logo.svg'
 import * as S from './styles'
 
 export const HomePage = () => {
@@ -35,9 +35,36 @@ export const HomePage = () => {
     if (e.key === 'Enter') setQuery(inputValue)
   }
 
-  const handleOpenModal = (placeId) => {
-    setPlaceId(placeId)
-    setIsModalOpen(true)
+  const renderRestaurants = () => {
+    if (restaurants.length === 0) return null
+    return restaurants.map((restaurant) => (
+      <RestaurantCard
+        key={restaurant.place_id}
+        restaurant={restaurant}
+        onClick={() => {
+          setPlaceId(restaurant.place_id)
+          setIsModalOpen(true)
+        }}
+      />
+    ))
+  }
+
+  const renderCarousel = () => {
+    if (restaurants.length === 0) return <Loader />
+    return (
+      <>
+        <S.CarouselTitle size="large">Na sua Área</S.CarouselTitle>
+        <S.Carousel {...settings}>
+          {restaurants.map((restaurant) => (
+            <ImageCard
+              key={restaurant.place_id}
+              title={restaurant.name}
+              photo={restaurant.photos ? restaurant.photos[0].getUrl() : restaurantImg}
+            />
+          ))}
+        </S.Carousel>
+      </>
+    )
   }
 
   return (
@@ -55,32 +82,9 @@ export const HomePage = () => {
               onChange={(e) => setInputValue(e.currentTarget.value)}
             />
           </TextField>
-          {restaurants.length > 0 ? (
-            <>
-              <S.CarouselTitle>Na Sua Área</S.CarouselTitle>
-              <S.Carousel {...settings}>
-                {restaurants.map((restaurant) => (
-                  <ImageCard
-                    key={restaurant.place_id}
-                    title={restaurant.name}
-                    photo={restaurant.photos ? restaurant.photos[0].getUrl() : restaurantImg}
-                  />
-                ))}
-              </S.Carousel>
-            </>
-          ) : (
-            <Loader />
-          )}
+          {renderCarousel()}
         </S.Search>
-        {restaurants.map((restaurant) => (
-          <RestaurantCard
-            key={restaurant.place_id}
-            restaurant={restaurant}
-            onClick={() => {
-              handleOpenModal(restaurant.place_id)
-            }}
-          />
-        ))}
+        {renderRestaurants()}
       </S.Container>
       <Map query={query} placeId={placeId} />
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)}>
